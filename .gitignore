@@ -1,3 +1,4 @@
-/node_modules
+# busca recursiva para ignorar a pasta node_modules nas subpastas
+**node_modules
 /build
 .env
