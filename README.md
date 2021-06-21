@@ -54,7 +54,7 @@ D:\pessoal\codigo\app> git push heroku master
 ```
 Lembrando que o seu app possui um nome diferente de `prova-sub`. O correto é a aplicação fazer o deploy no Heroku e ela estar disponível numa URL do Heroku.
 
-8. Crie uma pasta de nome `servidor` no `app`. Nessa pasta colocaremos o servidor Node, ou seja, ele será uma subpasta do projeto React;
+8. Crie uma pasta de nome `servidor` no `app`. Nessa pasta colocaremos o servidor Node, ou seja, o Node estará numa subpasta do projeto React:
 
 ![](https://github.com/arleysouza/prova-sub-scripts/blob/master/images/figura3.png)
 
@@ -62,7 +62,15 @@ Lembrando que o seu app possui um nome diferente de `prova-sub`. O correto é a 
 ```
 D:\pessoal\codigo\app\servidor> npm init -y
 ``` 
-Observe que será criado apenas o arquivo package.json.
-11.	Adicione os pacotes express, cors, pg e dotenv no servidor:
- 
-Dotenv é um modulo usado para carregar as variáveis de ambiente de um arquivo .env para process.env. 
+Observe que será criado apenas o arquivo `package.json`.
+
+10.	Adicione os pacotes `express`, `pg` e `dotenv` no `servidor`:
+ ```
+D:\pessoal\codigo\app\servidor> npm i express pg dotenv
+``` 
+Dotenv é um modulo usado para carregar as variáveis de ambiente de um arquivo `.env` para `process.env`. 
+
+11.	Crie o arquivo `.env`, na pasta `servidor`, e coloque nele a variável de ambiente `BD_URL` com o mesmo valor que colocamos no Passo 3:
+```
+BD_URL = 'postgres://roowzkzzvpoffw:bca09c54171e20229ccf@ec2-52-4-111-46.compute-1.amazonaws.com:5432/d4php93jva02bk?sslmode=no-verify'
+```
