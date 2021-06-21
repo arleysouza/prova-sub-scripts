@@ -104,3 +104,97 @@ app.get("/insert/:nro", async (req, res) => {
 const buildPath = path.join(__dirname, '..', 'build');
 app.use(express.static(buildPath));
 ```
+
+13.	Por enquanto iremos testar localmente, mas como o Heroku requer que a aplicação tenha um `start script`, então já iremos incluir essa propriedade no `package.json` da pasta `servidor`. Observe que a propriedade start tem o comando para rodar o arquivo `server.js`.
+```
+{
+  "name": "servidor",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "pg": "^8.6.0"
+  }
+}
+```
+
+14.	Digite o comando `npm start` na pasta para rodar somente o servidor Node:
+```
+D:\pessoal\codigo\app\servidor> npm start
+```
+No navegador teste as URLs http://localhost:3101/select e http://localhost:3101/insert/1.
+Observação: após testar as URLs, interrompa a execução do servidor.
+
+15.	No arquivo `package.json` da pasta `app` coloque as seguintes propriedades:
+```
+"scripts": {
+  "start-client": "react-scripts start",
+  "build": "react-scripts build && (cd servidor && npm install)",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject",
+  "start": "cd servidor && npm start"
+}
+```
+Observe que quando fizermos `npm start` na pasta `app` será executado o comando `npm start` da pasta `servidor`.
+
+16.	Execute o comando a seguir para gerar um build da aplicação React:
+```
+D:\pessoal\codigo\app> npm run-script build
+```
+O resultado do build será a pasta `build` com os arquivos da aplicação React prontos para o deploy.
+
+Ainda na pasta `app` iremos executar a aplicação React, mas observe que ela irá subir o servidor na porta 3101, assim como definimos no Passo 12. Isso ocorre porque estamos indiretamente rodando o `npm start` da pasta `servidor`.
+```
+D:\pessoal\codigo\app> npm start
+```
+No navegador teste as URLs http://localhost:3101/, http://localhost:3101/select e http://localhost:3101/insert/1. Observe que a URL http://localhost:3101/ é direcionada para a página index.html da aplicação React e as demais são direcionadas para as outras rotas definidas no arquivo `server.js`, no Passo 12.
+
+17.	Crie o arquivo `sql.js` na pasta `servidor` e coloque nele o código a seguir. Esse código faz a conexão com o PostgreSQL do Heroku usando a URI armazenada na variável de ambiente definida no Passo 11.
+```javascript
+const { Client } = require("pg");
+
+const select = async () => {
+  const client = new Client(process.env.BD_URL);
+  const sql = `select nro, count(*) as "quant" from tbregistro group by nro order by nro`;
+  try {
+    await client.connect();
+    const { rows } = await client.query(sql);
+    await client.end();
+    return { rows };
+  } catch (e) {
+    await client.end();
+    console.log(e)
+    return { error: e.message };
+  }
+};
+
+const insert = async (nro) => {
+  if (nro === undefined || nro.trim() === "") {
+    return { error: "Forneça um número inteiro" };
+  }
+  const client = new Client(process.env.BD_URL);
+  const sql = `insert into tbregistro(nro) values ('${nro}')`;
+  try {
+    await client.connect();
+    const { rowCount } = await client.query(sql);
+    await client.end();
+    return { rowCount };
+  } catch (e) {
+    await client.end();
+    return { error: e.message };
+  }
+};
+
+module.exports = {
+  select,
+  insert,
+};
+```
+
