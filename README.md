@@ -230,3 +230,61 @@ const buildPath = path.join(__dirname, '..', 'build');
 app.use(express.static(buildPath));
 ```
 Teste novamente a aplicação no navegador: http://localhost:3101/select e http://localhost:3101/insert/1 fazem a ligação com o SGBD.
+
+19.	Adicione o pacote `axios` no `app` para podermos fazer requisições do front-end para o back-end:
+```
+D:\pessoal\codigo\app> npm i axios
+```
+
+20.	Coloque o código a seguir no arquivo `App.js` da pasta `app/src`. Veja que aqui estamos fazendo uma conexão com o back-end através da URL `/select`.
+```
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+const App = () => {
+  const [registros, setRegistros] = useState([]);
+
+  useEffect(() => {
+    select();
+  }, []);
+
+  const select = () => {
+    axios
+      .get("/select")
+      .then((response) => {
+        if (response.data.error) alert(response.data.error);
+        else setRegistros(response.data.rows);
+      })
+      .catch((e) => alert(e.message));
+  };
+
+  const lista = registros.map( item => <div>{item.nro}: {item.quant}</div> )
+
+  return ( <div className="App">  {lista}  </div> );
+}
+
+export default App;
+```
+Para testarmos a modificação no React teremos de interromper a execução da aplicação e repetir o Passo 16, ou seja, teremos de executar o comando `npm run-script build` e depois para subir a aplicação rodamos o comando `npm start` na pasta `app`:
+```
+D:\pessoal\codigo\app> npm run-script build
+D:\pessoal\codigo\app> npm start
+```
+Abra a URL http://localhost:3101/ no navegador para testar. O correto será aparecer os registros cadastrados na tbregistro do SGBD.
+
+21.	Antes de fazer o deploy no Heroku edite o arquivo `.gitignore` da pasta `app` para ignorar:
+```
+# busca recursiva para ignorar a pasta node_modules nas subpastas
+**node_modules
+/build
+.env
+```
+
+22.	Agora faremos novamente o deploy no Heroku:
+```
+D:\pessoal\codigo\app> git add .
+D:\pessoal\codigo\app> git commit -am "aplicacao"
+D:\pessoal\codigo\app> git push heroku master
+```
+Faça o teste da aplicação no navegador após concluir o deploy: http://prova-sub.herokuapp.com/, http://prova-sub.herokuapp.com/select e http://prova-sub.herokuapp.com/insert/5. Lembre-se que a sua URL estará num domínio diferente.
+
