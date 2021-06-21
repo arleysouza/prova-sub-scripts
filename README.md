@@ -74,3 +74,33 @@ Dotenv é um modulo usado para carregar as variáveis de ambiente de um arquivo 
 ```
 BD_URL = 'postgres://roowzkzzvpoffw:bca09c54171e20229ccf@ec2-52-4-111-46.compute-1.amazonaws.com:5432/d4php93jva02bk?sslmode=no-verify'
 ```
+
+12.	Crie o arquivo `server.js`, na pasta `servidor`, e coloque nele o código a seguir para testarmos o servidor:
+```javascript
+const express = require("express");
+const app = express();
+const path = require('path');
+require("dotenv").config();
+
+// para conversão de application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+
+// usar a variável de ambiente PORT
+const PORT = process.env.PORT || 3101;
+
+app.listen(PORT, () => {
+  console.log(`Rodando na porta ${PORT}...`);
+});
+
+app.get("/select", async (req, res) => {
+    res.send("rodando select");
+});
+
+app.get("/insert/:nro", async (req, res) => {
+    res.send("rodando insert");
+});
+
+// rota para os arquivos da pasta build do app
+const buildPath = path.join(__dirname, '..', 'build');
+app.use(express.static(buildPath));
+```
