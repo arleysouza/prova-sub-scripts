@@ -1,6 +1,6 @@
-### Prova Sub da Disciplina de Scripts
+### Aplicação React e NodeJS no mesmo app do Heroku
 
-A aplicação consiste em desenvolver uma aplicação cliente em React e a parte servidora em Node. O servidor deverá persistir os dados no SGBD PostgreSQL.
+O código possui uma aplicação React (front-end) e Node (back-end) que executa no mesmo app do Heroku. O back-end persiste os dados no SGBD PostgreSQL disponível através do complemento Heroku Postgres.
 
-A aplicação como um todo deverá estar em um único app do Heroku.
+![](https://github.com/arleysouza/prova-sub-scripts/blob/master/images/ilustracao.png)
 
